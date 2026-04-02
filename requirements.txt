@@ -1,0 +1,2 @@
+# Optional: tools/ 仅使用 Python 标准库，无需依赖。
+# 若日后增加脚本可在此列出。

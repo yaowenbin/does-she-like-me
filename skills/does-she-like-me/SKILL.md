@@ -1,0 +1,122 @@
+---
+name: does-she-like-me
+description: >-
+  Multi-lens chat analysis (evolution metaphor, gene/meme rhetoric, psychology,
+  literary "translation of desire", optional astrology as culture) for inferring
+  romantic interest—not fortune-telling. | 她爱你嘛：从生物隐喻、心理、文学到星座（文化层）
+  多透镜解读聊天记录里的好感信号，非算命、非心理咨询。
+argument-hint: optional chat paste or file path
+version: 0.1.0
+user-invocable: true
+allowed-tools: Read, Bash
+---
+
+> **Language / 语言**: Detect the user's language from their first message; reply in the same language throughout. 根据用户第一条消息的语言全程同语言回复。
+
+# 她爱你嘛 · Does She Like Me（多透镜解读 Skill）
+
+## 触发条件
+
+当用户说以下任意内容时启动：
+
+* `/她爱你嘛` / `/does-she-like-me` / `/ta-aini`
+* 「帮我看看她喜不喜欢我」「分析聊天记录」「她对我什么意思」
+* 粘贴或上传**你有权使用**的私聊/IM 文本并要求好感解读
+
+---
+
+## 工具使用规则（可选）
+
+| 任务 | 命令（将 `${SKILL_DIR}` 换为本 Skill 根目录 `skills/does-she-like-me`） |
+| ---- | ------------------------------------------------------------------------ |
+| 本地脱敏（手机/微信样式等） | `python "${SKILL_DIR}/tools/redact.py" --input path.txt --output path.redacted.txt` |
+| 按行切块（便于分步阅读） | `python "${SKILL_DIR}/tools/split_chat.py" --input path.txt --lines 80 --out-dir ./chunks` |
+
+Claude Code 用户可将 `SKILL_DIR` 写作 `${CLAUDE_SKILL_DIR}`（若环境提供）。Cursor 用户请使用本仓库克隆后的实际路径。
+
+---
+
+## 认识论层级（必须在报告中展示）
+
+| 层级 | 标签 | 含义 |
+| ---- | ---- | ---- |
+| L1 | `心理学-科普` | 较贴近经验科学共识，仍有误判 |
+| L2 | `演化-隐喻` | 思想实验/类比，**非**个体预测 |
+| L3 | `基因-修辞` | 模因与策略叙事，**非**基因检测 |
+| L4 | `文学-阐释` | 文本细读，多种译本并存 |
+| L5 | `星座-文化` | 自愿标签下的文化修辞，**非**科学 |
+
+**禁止**：输出「她 87% 爱你」等伪精确数字；禁止星座+演化+单句聊天「三重确认」为绝对结论；禁止对第三方做病理诊断或个体基因决定论。
+
+---
+
+## 安全边界（⚠️ 重要）
+
+执行任何分析前，对照 `${SKILL_DIR}/prompts/safety_refusal.md`。若命中拒答条件：**不得**继续解读，按该文件话术回应。
+
+核心原则：
+
+1. **非心理咨询 / 非医疗**：不诊断抑郁、人格障碍等；严重情绪困扰建议专业帮助。
+2. **隐私与同意**：只分析用户**有权使用**的内容；不协助监视、盗号、跟踪、骚扰。
+3. **非确定性预测**：必须写清不确定性与**替代解释**（礼貌、工作忙、回避冲突、纯友谊等）。
+4. **反 PUA**：不提供操控、钓鱼、践踏对方边界的话术。
+5. **未成年人**：涉及未成年人不当关系或风险，拒答并引导合法合规途径。
+
+---
+
+## 主流程
+
+### Step 0：拒答检查
+
+快速扫一眼用户请求与材料是否触发 `safety_refusal.md`。
+
+### Step 1：Intake
+
+遵循 `prompts/intake.md` 收集：关系阶段、聊天场景、时间跨度、**可选**星座/MBTI（未提供则不得追问生日）、是否关闭某透镜（默认全开）。
+
+### Step 2：材料与证据卡片
+
+* 若文本极长：先 `analyze_segments.md` — 分块摘录，形成结构化**证据卡片**（时间/发言人/原句摘引）。
+* 若用户上传文件：可用 `Read` 读取后再走同上。
+
+### Step 3：行为层量表
+
+用 `score_rubric.md` 对聊天行为打分（Likert + **每条绑定引文**）。
+
+### Step 4：多透镜（并行 mentally，输出时分节）
+
+在**同一证据卡片**上，按需生成各节（每节首行标注 **【透镜 · Lx】**）：
+
+| 文件 | 条件 |
+| ---- | ---- |
+| `lens_evolution.md` | 默认开启 |
+| `lens_gene_rhetoric.md` | 默认开启 |
+| `lens_psychology.md` | 默认开启 |
+| `lens_literature.md` | 默认开启 |
+| `lens_astrology.md` | **仅当** intake 提供了星座/MBTI 等自愿标签；否则输出固定跳过句 |
+
+每节须遵守各文件顶部**禁用表述**与强度标签。
+
+### Step 5：Synthesis
+
+严格按 `synthesis.md`：**冲突调解** → **区间结论**（如偏低 / 不明 / 中等偏高）→ **三种叙事**（含纯友谊）→ **可验证下一步** → **何时停止过度解读**。
+
+### Step 6：交付物检查
+
+* 含「透镜强度说明」小表（见上）。
+* 每透镜有小节；星座未提供时 `lens_astrology` 仅为跳过说明。
+* 有不确定性摘要；无单一「一定爱/不爱」式判决。
+
+---
+
+## 参考维护
+
+术语与误判：`reference.md`。扩展新透镜时：新增 `prompts/lens_*.md` + 在本文件与 `synthesis.md` 注册。
+
+---
+
+## 致敬
+
+* 工程结构受 [therealXiaomanChu/ex-skill](https://github.com/therealXiaomanChu/ex-skill)（前任.skill）启发：`SKILL.md` + `prompts/` + `tools/`。
+* 本产品为**好感信号多透镜解读**，不生成拟人人格对话 Skill。
+
