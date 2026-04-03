@@ -1,37 +1,162 @@
 # 她爱你嘛.skills
 
-把聊天记录当成**互动样本**，用多透镜（演化隐喻、基因/模因修辞、心理学通俗框架、文学性的「欲望翻译」、**自愿标签**下的星座/MBTI 文化对照）做**结构化解读**——**不是算命，不是心理咨询**，更不是个体基因判决。
+> *"把聊天当成样本，而不是审判。"*
 
-工程结构致敬 [therealXiaomanChu/ex-skill](https://github.com/therealXiaomanChu/ex-skill)：`SKILL.md` + `prompts/` + `tools/`。
+用多透镜（演化隐喻、基因/模因修辞、心理学通俗框架、文学性的「欲望的翻译」、以及**自愿标签**下的星座/MBTI 文化对照）来解读：  
+**在你们的聊天里，对方更像是“有好感/在意你”，还是“礼貌朋友/回避压力”？**
+
+⚠️ **本 Skill 只做结构化分析与沟通建议，不用于骚扰、跟踪、盗号或侵犯隐私；不提供诊断，也不替代真实双向选择。**
+
+[安装](#安装) · [使用](#使用) · [效果示例](#效果示例) · [English](README_EN.md)
+
+---
 
 ## 安装
 
-见 [INSTALL.md](./INSTALL.md)。
+### Claude Code
 
-**Cursor（项目级）**：将 `skills/does-she-like-me` 复制或软链到仓库的 `.cursor/skills/does-she-like-me`（目录内须有 `SKILL.md`）。
+> **重要**：Claude Code 从项目根目录的 `.claude/skills/` 查找 skill。请把 skill 放到正确位置。
 
-**Claude Code**：可克隆整个仓库到 `.claude/skills/ta-aini`，并把内含的 `skills/does-she-like-me` 作为工作目录，或直接把 `does-she-like-me` 文件夹放到 skills 根目录并保证 Agent 能读到 `SKILL.md`。
+```bash
+mkdir -p .claude/skills
+cp -R path/to/does-she-like-me/skills/does-she-like-me .claude/skills/does-she-like-me
+```
+
+### Cursor（项目级）
+
+```bash
+mkdir -p .cursor/skills
+cp -R path/to/does-she-like-me/skills/does-she-like-me .cursor/skills/does-she-like-me
+```
+
+---
 
 ## 使用
 
-对 Agent 说：`/她爱你嘛` 或粘贴聊天记录并说明「帮我从多角度看看好感信号」。
+在 Agent 里输入：
 
-Agent 应按 `SKILL.md` 主流程：拒答检查 → intake → 证据卡片 → 行为量表 → 各透镜 → synthesis。
-
-## 可选本地工具（stdlib）
-
-```bash
-python skills/does-she-like-me/tools/redact.py -i chat.txt -o chat.redacted.txt
-python skills/does-she-like-me/tools/split_chat.py -i chat.txt -n 80 -d ./chunks
+```
+/她爱你嘛
 ```
 
-## 伦理摘要
+或直接粘贴你有权使用的聊天记录，并说明你想知道的具体问题，例如：
 
-仅分析你有权使用的材料；禁止骚扰与操控话术；占星模块 **L5** 且需自愿标签；完整边界见各文件内「安全边界」。
+```
+帮我从多角度看看她对我的喜欢程度（基于聊天记录的证据与替代解释）
+```
 
-## 文档
+Agent 会按 `skills/does-she-like-me/SKILL.md` 的主流程输出：  
+拒答检查 → intake → 证据卡片 → 行为层量表 → 各透镜（L1-L5）→ synthesis（冲突调解 + 区间结论 + 叙事三选 + 下一步）。
 
-- 设计说明：`docs/方案书.md`
+---
+
+## 效果示例
+
+> **免责声明**：以下为虚构示例（不包含任何真实隐私），用于展示输出结构与语气。
+
+```
+用户：她前段时间会主动找我，偶尔会问我在干嘛；但有几次我提到以后，她就转移话题。
+
+Agent：收到。下面是基于你提供的聊天片段的多透镜解读（包含不确定性）。
+
+【心理学-科普 · L1】
+她的提问更像是“维持联系/确认状态”，但当你触及更具体的未来议题时，她选择了回避或降温。（证据：「……」）
+这可能是内向/忙，也可能是尚未准备把关系推进到更确定层级（推断；待证实）。
+
+【文学-阐释 · L4】
+字面上她仍保持礼貌互动；在更亲密叙事处出现省略与停顿，更像“留白”而不是拒绝。（证据：「……」）
+可能译本至少包括：关心但害怕压力 / 纯友谊但在意你的情绪。
+
+【星座-文化 · L5】
+若你未提供星座标签，本透镜将跳过；若提供，将把星座当文化修辞对照，并回落到聊天原句验证。
+
+【合成（Synthesis）】
+综合区间：中等偏高（混合信号）。
+三种最像叙事：
+A. 有好感试探：她会主动维持连接，但在推进时会谨慎。
+B. 友好礼貌：她关心你，但关系边界偏朋友。
+C. 回避亲密：她在避免让你误读或增加期待。
+
+下一步（低压力）：
+用“轻量邀请”替代“定义未来”，例如聊一个你们都愿意做的小计划，并观察她是否愿意共同确定细节。
+```
+
+---
+
+## 功能特性
+
+### 多透镜结构（从“样本”到“可复核结论”）
+
+这不是“算命”，而是对聊天文本做证据抽取与冲突调解：
+
+| 透镜 | 认识论强度 | 作用 |
+|------|------------|------|
+| L1 心理学-科普 | 较贴近经验共识 | 把行为解释为沟通风格谱系（非诊断） |
+| L2 演化-隐喻 | 类比/思想实验 | 把成本信号与互惠当作叙事框架 |
+| L3 基因-修辞 | 模因/策略叙事 | 探讨话术模板与偏离模板的意义（非基因检测） |
+| L4 文学-阐释 | 文本细读 | “欲望的翻译”：多重译本并存 |
+| L5 星座-文化 | 自愿标签娱乐 | 只做文化修辞对照，禁止宿命论 |
+
+### 安全边界（必须遵守）
+
+* 只基于你**有权使用**的材料分析
+* 不提供骚扰、操控、跟踪话术
+* 不对第三方做临床诊断
+* 星座模块仅在用户**自愿提供标签**时启用
+
+---
+
+## 项目结构
+
+本项目遵循与 `ex-skill` 相同的发布组织习惯（`SKILL.md` + `prompts/` + 可选 `tools/`），便于社区理解与长期演进：
+
+```
+does-she-like-me/
+├── README.md
+├── INSTALL.md
+├── LICENSE
+├── skills/
+│   └── does-she-like-me/
+│       ├── SKILL.md       # skill 入口（触发+主流程）
+│       ├── reference.md   # 术语卡、误判速查与禁用表述
+│       └── prompts/       # intake、证据抽取、各透镜、synthesis
+└── docs/方案书.md          # 设计说明
+```
+
+---
+
+## 推荐的聊天记录导出工具（wx）
+
+以下为独立开源项目，本仓库不包含其代码；仅用于解析器兼容导出格式：
+
+- **[WeChatMsg](https://github.com/LC044/WeChatMsg)** — 微信聊天记录导出（Windows，txt/html/csv）
+- **[PyWxDump](https://github.com/xaoyaoo/PyWxDump)** — 微信数据库解密导出（Windows，SQLite）
+- **留痕** — 微信聊天记录导出（macOS，JSON）
+
+---
+
+## 致敬 & 引用
+
+本 Skill 的工程结构灵感来自：
+
+* **[therealXiaomanChu/ex-skill](https://github.com/therealXiaomanChu/ex-skill)**（致敬其 `SKILL.md + prompts/ + tools/` 的可维护结构）
+* **[titanwings/colleague-skill](https://github.com/titanwings/colleague-skill)**（致敬“把人蒸馏成 AI Skill”的双层叙事精神）
+* **[AgentSkills](https://agentskills.io)**（致敬开放标准与兼容理念）
+
+---
+
+## 注意事项
+
+* 聊天记录属于“样本”，不是证据裁决；同一句话可能有不同译本。
+* 输出包含不确定性与反例，避免单点误读。
+* 若你发现自己出现强烈焦虑或反复纠缠，建议暂停并寻求专业帮助（对你自己的负责）。
+
+---
+
+### 写在最后
+
+把“她到底喜不喜欢我”从冲动里拽出来，让它变成**可观察、可验证、可回到现实**的问题。  
+真实关系只看：双向选择、边界感、以及下一次坦诚沟通的结果。
 
 ## License
 
