@@ -6,7 +6,7 @@ description: >-
   romantic interest—not fortune-telling. | 她爱你嘛：从生物隐喻、心理、文学到星座（文化层）
   多透镜解读聊天记录里的好感信号；引导你用证据沟通、保护边界、爱自己；非算命、非心理咨询。
 argument-hint: optional chat paste or file path
-version: 0.1.0
+version: 0.2.0
 user-invocable: true
 allowed-tools: Read, Bash
 ---
@@ -95,6 +95,29 @@ Claude Code 用户可将 `SKILL_DIR` 写作 `${CLAUDE_SKILL_DIR}`（若环境提
 
 用 `score_rubric.md` 对聊天行为打分（Likert + **每条绑定引文**）。
 
+### Step 3.5：Core-10 信号引擎（底层驱动）
+
+在行为层基础上，按 `score_rubric.md` 的 Core-10 信号矩阵输出结构化分项，禁止跳过“替代解释”。
+
+Core-10 信号：
+
+1. 主动互动频次与质量  
+2. 情绪投入与共情能力  
+3. 边界感与排他性  
+4. 行为一致性与长期稳定性  
+5. 语言细节与潜意识信号  
+6. 投入成本与优先级  
+7. 社交背书与态度公开  
+8. 人格与性格校正  
+9. 场景与关系阶段校正  
+10. 反向排除（假性喜欢/利用风险）
+
+权重规则：
+
+- 默认权重：底层 40% + 进阶 35% + 校正 25%  
+- 仅可在用户提供“人格/阶段/场景”信息后做权重微调  
+- 任何微调都要输出 `weight_snapshot`，且说明调整原因
+
 ### Step 4：多透镜（并行 mentally，输出时分节）
 
 在**同一证据卡片**上，按需生成各节（每节首行标注 **【透镜 · Lx】**）：
@@ -117,9 +140,36 @@ Claude Code 用户可将 `SKILL_DIR` 写作 `${CLAUDE_SKILL_DIR}`（若环境提
 ### Step 6：交付物检查
 
 * 含「透镜强度说明」小表（L1–L6，见上）。
+* 含 Core-10 信号分项与 `weight_snapshot`。
 * 每透镜有小节；星座未提供时 `lens_astrology` 仅为跳过说明；L6 不可得时须写从略原因。
 * 有不确定性摘要；无单一「一定爱/不爱」式判决。
 * L6 若输出：须有「专业整合」与「给用户的人话要点」双轨。
+
+---
+
+## 输出协议（强制）
+
+最终报告必须同时满足“人类可读 + 机器可提取”：
+
+1. 人类可读  
+- 先给一句结论，再给证据，再给下一步与止损线。  
+- 全程避免百分比“真值判定”，使用区间档位。  
+
+2. 机器可提取  
+- 在结尾附一个 `Structured Summary` 小节，字段固定为：  
+  - `overall_band`: 偏低 / 信号混在一起 / 中等偏高 / 样本不足  
+  - `confidence`: low / medium / high  
+  - `skill_scores`: 10 项分数字典（1-5 或 nc）  
+  - `weight_snapshot`: 10 项权重字典（总和=1）  
+  - `top_evidence`: 3-6 条证据摘要  
+  - `risk_flags`: 风险标签数组  
+  - `next_step`: 一条低压力可验证动作  
+  - `stop_rule`: 何时停止过度解读  
+
+3. 置信度规则  
+- `high`：核心维度覆盖充分，且存在跨时间证据。  
+- `medium`：有关键维度证据，但仍有缺口。  
+- `low`：样本短、信息缺失或冲突大，无法稳定判断。
 
 ---
 
